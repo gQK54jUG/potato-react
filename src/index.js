@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React from 'react';
+import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
@@ -37,26 +37,21 @@ class Top extends React.Component {
         };
     }
 
-    apiCheck() {
-        this.setState({
-            log: 'ko'
-        });
-        console.log(this.state.log);
-        // axios.get(`https://jsonplaceholder.typicode.com/users`)
-        //     .then(res => {
-        //         const persons = res.data;
-        //         this.setState({persons});
-        //     });
-        
-        // this.state.persons.map((val, key) => {
-        //     console.log(key, val);
-        // });
+    componentWillMount() {
+        axios.get(`https://jsonplaceholder.typicode.com/users`)
+            .then(res => {
+                const persons = res.data;
+                // console.log(persons);
+                this.setState({
+                    persons: persons
+                });
+            });
     }
-
+        
     render() {
         var textareaCheck = '';
 
-        // this.apiCheck();
+        console.log(this.state.persons);
 
         return (
             <div className='top-nav-title'>
