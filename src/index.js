@@ -38,10 +38,9 @@ class Top extends React.Component {
     }
 
     componentWillMount() {
-        axios.get(`https://jsonplaceholder.typicode.com/users`)
+        axios.get(`https://35.230.56.21/BulletinBoard.json`)
             .then(res => {
                 const persons = res.data;
-                // console.log(persons);
                 this.setState({
                     persons: persons
                 });
