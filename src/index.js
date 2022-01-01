@@ -1,14 +1,33 @@
 import axios from 'axios';
-import React, {useEffect} from 'react';
+import React, {} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
 class Input extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            post: ''
+        };
+    }
+
+    handleSubmit = (eventObject) => {
+        axios.get(`https://potato-bb.net/BulletinBoard/add`, {
+            params: {
+                contents: this.state.post
+            }
+        });
+    }
+
+    handleTextChange = (eventObject) => {
+        this.setState({post: eventObject.target.value});
+    }
+
     render() {
         return(
-            <form>
+            <form onSubmit={this.handleSubmit}>
                 <div className='input textarea'>
-                    <textarea></textarea>
+                    <input value={this.state.post} onChange={this.handleTextChange}/>
                 </div>
                 <div className='submit'>
                     <input type='submit' value='投稿する'/>
@@ -20,11 +39,22 @@ class Input extends React.Component {
 
 class Bulletin extends React.Component {
     render() {
-        return(
-            <div>
+        const bulletinList = Object.values(this.props.bulletinList);
 
-            </div>
-        );
+        const listCreate = bulletinList.map((val, key) => {
+            return (
+                <div className="bulletin_lists" key={key}>
+                    <div className="bulletin_info">
+                        {val.bulletin_id} UserId:<a>{val.board_user_id}</a> {val.datetime}
+                    </div>
+                    <div className="bulletin_contents">
+                        {val.contents}
+                    </div>
+                </div>
+            );
+        });
+
+        return(<div>{listCreate}</div>);
     }
 }
 
@@ -33,24 +63,21 @@ class Top extends React.Component {
         super(props);
         this.state = {
             log: '',
-            persons: []
+            bulletinList: []
         };
     }
 
     componentWillMount() {
-        axios.get(`https://35.230.56.21/BulletinBoard.json`)
+        axios.get(`https://potato-bb.net/BulletinBoard.json`)
             .then(res => {
-                const persons = res.data;
                 this.setState({
-                    persons: persons
+                    bulletinList: res.data.bulletin_list
                 });
             });
     }
         
     render() {
         var textareaCheck = '';
-
-        console.log(this.state.persons);
 
         return (
             <div className='top-nav-title'>
@@ -63,7 +90,8 @@ class Top extends React.Component {
                     {textareaCheck}
                 </div>
                 <Input />
-                <Bulletin />
+                <Bulletin
+                    bulletinList={this.state.bulletinList}/>
             </div>
         );
     }
